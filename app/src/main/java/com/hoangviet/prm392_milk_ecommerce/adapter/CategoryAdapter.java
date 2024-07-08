@@ -59,7 +59,7 @@ public class CategoryAdapter extends BaseAdapter {
         }
 
         viewHolder.categoryname.setText(array.get(i).getCategoryname());
-        Glide.with(context).load(array.get(i).getImage()).into(viewHolder.categoryimage);
+        Glide.with(context).load(array.get(i).getCategory_image()).into(viewHolder.categoryimage);
 
         return view;
     }
