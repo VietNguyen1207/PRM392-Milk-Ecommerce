@@ -1,11 +1,13 @@
-package com.hoangviet.prm392_milk_ecommerce.model;
+package com.hoangviet.prm392_milk_ecommerce.callback;
+
+import com.hoangviet.prm392_milk_ecommerce.model.NewProduct;
 
 import java.util.List;
 
-public class Category_callback {
+public class NewProduct_callback {
     boolean success;
     String message;
-    List<Category> result;
+    List<NewProduct> result;
 
     public boolean isSuccess() {
         return success;
@@ -23,11 +25,11 @@ public class Category_callback {
         this.message = message;
     }
 
-    public List<Category> getResult() {
+    public List<NewProduct> getResult() {
         return result;
     }
 
-    public void setResult(List<Category> result) {
+    public void setResult(List<NewProduct> result) {
         this.result = result;
     }
 }

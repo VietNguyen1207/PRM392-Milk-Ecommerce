@@ -16,15 +16,18 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.hoangviet.prm392_milk_ecommerce.R;
 import com.google.android.material.navigation.NavigationView;
 import com.hoangviet.prm392_milk_ecommerce.adapter.CategoryAdapter;
+import com.hoangviet.prm392_milk_ecommerce.adapter.NewProductAdapter;
 import com.hoangviet.prm392_milk_ecommerce.api.ApiMilkStore;
+import com.hoangviet.prm392_milk_ecommerce.callback.NewProduct_callback;
 import com.hoangviet.prm392_milk_ecommerce.model.Category;
-import com.hoangviet.prm392_milk_ecommerce.model.Category_callback;
+import com.hoangviet.prm392_milk_ecommerce.model.NewProduct;
 import com.hoangviet.prm392_milk_ecommerce.retrofit.RetrofitClient;
 import com.hoangviet.prm392_milk_ecommerce.utils.Utils;
 
@@ -37,14 +40,24 @@ import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class MainActivity extends AppCompatActivity {
 
+    //para
     Toolbar toolbar;
     ViewFlipper viewFlipper;
     RecyclerView recyclerViewManHinhChinh;
     NavigationView navigationView;
     ListView listViewManHinhChinh;
     DrawerLayout drawerLayout;
+
+
+    //Adapter
     CategoryAdapter categoryAdapter;
+    NewProductAdapter newProductAdapter;
+
+    //List
     List<Category> listCategories;
+    List<NewProduct> listNewProducts;
+
+    //Api
     CompositeDisposable compositeDisposable = new CompositeDisposable();
     ApiMilkStore apiMilkStore;
 
@@ -57,6 +70,8 @@ public class MainActivity extends AppCompatActivity {
         apiMilkStore = RetrofitClient.getInstance(Utils.BASE_URL).create(ApiMilkStore.class);
         Anhxa();
         ActionBar();
+        getNewProduct();
+
         if(isConnect(this)){
             Toast.makeText(getApplicationContext(), "Connect", Toast.LENGTH_LONG).show();
             ActionViewFlipper();
@@ -66,6 +81,26 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void getNewProduct(){
+        compositeDisposable.add(apiMilkStore.getNewProduct()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        newProductCallback -> {
+                            if(newProductCallback.isSuccess()) {
+                                listNewProducts = newProductCallback.getResult();
+                                newProductAdapter = new NewProductAdapter(getApplicationContext(), listNewProducts);
+                                recyclerViewManHinhChinh.setAdapter(newProductAdapter);
+                            }
+                        },
+                        throwable -> {
+                            Log.e(TAG, "Error fetching category", throwable);
+                            Log.d(TAG, "Calling URL: "  + "/getcategory.php");
+                            Toast.makeText(getApplicationContext(), "Không kết nối được server " + throwable.getMessage(), Toast.LENGTH_LONG).show();
+                        }
+                ));
+    }
+
     private void getCategory(){
         compositeDisposable.add(apiMilkStore.getCategory()
                 .subscribeOn(Schedulers.io())
@@ -73,12 +108,18 @@ public class MainActivity extends AppCompatActivity {
                 .subscribe(
                         category_callback -> {
                             if (category_callback.isSuccess()) {
-                                Category category = category_callback.getResult().get(0);
-                                Toast.makeText(getApplicationContext(), category.toString(), Toast.LENGTH_LONG).show();
+//                                Category category = category_callback.getResult().get(0);
+//                                Toast.makeText(getApplicationContext(), category.toString(), Toast.LENGTH_LONG).show();
+                                listCategories = category_callback.getResult();
+                                // Create adapter
+//                                listCategories = new ArrayList<>();
+                                categoryAdapter = new CategoryAdapter(getApplicationContext(), listCategories);
+                                listViewManHinhChinh.setAdapter(categoryAdapter);
                             }
                         },
                         throwable -> {
                             Log.e(TAG, "Error fetching category", throwable);
+                            Log.d(TAG, "Calling URL: " + "getcategory.php");
                             Toast.makeText(getApplicationContext(), "Error: " + throwable.getMessage(), Toast.LENGTH_LONG).show();
                         }
                 ));
@@ -121,13 +162,17 @@ public class MainActivity extends AppCompatActivity {
         toolbar = findViewById(R.id.toolbarmanhinhchinh);
         viewFlipper = findViewById(R.id.viewflipper);
         recyclerViewManHinhChinh = findViewById(R.id.recyleview);
+        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(this, 2);
+        recyclerViewManHinhChinh.setLayoutManager(layoutManager);
+        recyclerViewManHinhChinh.setHasFixedSize(true);
         navigationView = findViewById(R.id.navigationview);
         listViewManHinhChinh = findViewById(R.id.listviewmanhinhchinh);
         drawerLayout = findViewById(R.id.drawerlayout);
-        // Create adapter
+
+        //khoi tao list
         listCategories = new ArrayList<>();
-        categoryAdapter = new CategoryAdapter(getApplicationContext(), listCategories);
-        listViewManHinhChinh.setAdapter(categoryAdapter);
+        listNewProducts = new ArrayList<>();
+
     }
 
     private boolean isConnect (Context context){
@@ -139,5 +184,11 @@ public class MainActivity extends AppCompatActivity {
         } else {
             return false;
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        compositeDisposable.clear();
+        super.onDestroy();
     }
 }
