@@ -4,7 +4,10 @@ import com.hoangviet.prm392_milk_ecommerce.callback.Category_callback;
 import com.hoangviet.prm392_milk_ecommerce.callback.NewProduct_callback;
 
 import io.reactivex.rxjava3.core.Observable;
+import retrofit2.http.Field;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
+import retrofit2.http.POST;
 
 public interface ApiMilkStore {
     //get the category
@@ -15,4 +18,11 @@ public interface ApiMilkStore {
     @GET("getnewproduct.php")
     Observable<NewProduct_callback> getNewProduct();
 
+    //get products information
+    @POST("getproductinformation.php")
+    @FormUrlEncoded
+    Observable<NewProduct_callback> getProductInformation(
+            @Field("page") int page,
+            @Field("category_id") int category_id
+    );
 }
