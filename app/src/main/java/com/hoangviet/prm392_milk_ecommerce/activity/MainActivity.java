@@ -1,6 +1,7 @@
 package com.hoangviet.prm392_milk_ecommerce.activity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -8,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -71,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
         Anhxa();
         ActionBar();
         getNewProduct();
-
+        getEnventClick();
         if(isConnect(this)){
             Toast.makeText(getApplicationContext(), "Connect", Toast.LENGTH_LONG).show();
             ActionViewFlipper();
@@ -79,6 +81,29 @@ public class MainActivity extends AppCompatActivity {
         }else {
             Toast.makeText(getApplicationContext(), "No Internet", Toast.LENGTH_LONG).show();
         }
+    }
+
+    private void getEnventClick() {
+        listViewManHinhChinh.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                switch (i){
+                    case 0:
+                        Intent trangchu = new Intent(getApplicationContext(), MainActivity.class);
+                        startActivity(trangchu);
+                        break;
+                    case 1:
+                        Intent suaphasan = new Intent(getApplicationContext(), SuaPhaSanActivity.class);
+                        startActivity(suaphasan);
+                        break;
+                    case 2:
+                        Intent suabot = new Intent(getApplicationContext(), SuaBotActivity.class);
+                        suabot.putExtra("category_id",1);
+                        startActivity(suabot);
+                        break;
+                }
+            }
+        });
     }
 
     private void getNewProduct(){
