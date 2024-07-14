@@ -1,9 +1,12 @@
 package com.hoangviet.prm392_milk_ecommerce.activity;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.graphics.Insets;
@@ -31,6 +34,9 @@ public class SuaBotActivity extends AppCompatActivity {
     //params
     Toolbar toolbar;
     RecyclerView recyclerView;
+    LinearLayoutManager linearLayoutManager;
+    Handler handler = new Handler();
+    boolean isLoading = false;
 
     //api
     ApiMilkStore apiMilkStore;
@@ -51,20 +57,79 @@ public class SuaBotActivity extends AppCompatActivity {
         category_id = getIntent().getIntExtra("category_id",1);
         Anhxa();
         ActionToolBar();
-        getData();
+        getData(page);
+        addEventLoad();
     }
 
-    private void getData() {
+    private void addEventLoad() {
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+            }
+
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if(isLoading == false) {
+                    if(linearLayoutManager.findLastCompletelyVisibleItemPosition() == listSuabot.size()-1){
+                        isLoading = true;
+                        loadMore();
+                    }
+                }
+            }
+        });
+    }
+
+    private void loadMore(){
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                //add null
+                listSuabot.add(null);
+                suabotAdapter.notifyItemInserted(listSuabot.size() - 1);
+            }
+        });
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                //remove null
+                listSuabot.remove(listSuabot.size() -1);
+                suabotAdapter.notifyItemRemoved(listSuabot.size());
+                page = page + 1;
+                getData(page);
+                suabotAdapter.notifyDataSetChanged();
+                isLoading = false;
+            }
+        }, 2000);
+    }
+
+    private void getData( int page) {
         compositeDisposable.add(apiMilkStore.getProductInformation(page , category_id)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                    newProductCallback -> {
                         if (newProductCallback.isSuccess()) {
-                            listSuabot = newProductCallback.getResult();
-                            suabotAdapter = new SuabotAdapter(getApplicationContext(), listSuabot);
-                            recyclerView.setAdapter(suabotAdapter);
-                       }                   },
+                            if(suabotAdapter == null) {
+                                listSuabot = newProductCallback.getResult();
+                                suabotAdapter = new SuabotAdapter(getApplicationContext(), listSuabot);
+                                recyclerView.setAdapter(suabotAdapter);
+                            }else {
+                                int newproductloadedPos = listSuabot.size()-1;
+                                int quantityAdd = newProductCallback.getResult().size();
+                                for (int i = 0; i < quantityAdd; i++) {
+                                    listSuabot.add(newProductCallback.getResult().get(i));
+                                }
+                                suabotAdapter.notifyItemRangeInserted(newproductloadedPos, quantityAdd);
+                            }
+
+                       }else {
+                            Toast.makeText(getApplicationContext(),"Het data", Toast.LENGTH_LONG).show();
+                            isLoading = true;
+
+                        }
+                        },
                         throwable -> {
                             Toast.makeText(getApplicationContext(),"Khong the ket noi den server", Toast.LENGTH_LONG).show();
                         }
@@ -74,13 +139,19 @@ public class SuaBotActivity extends AppCompatActivity {
     private void ActionToolBar() {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
     }
 
     private void Anhxa() {
         toolbar = findViewById(R.id.suabot_toolbar);
         recyclerView = findViewById(R.id.suabot_recyleview);
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
-        recyclerView.setLayoutManager(layoutManager);
+        linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setHasFixedSize(true);
         listSuabot = new ArrayList<>();
     }
