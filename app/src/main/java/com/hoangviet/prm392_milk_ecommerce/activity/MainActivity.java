@@ -93,7 +93,8 @@ public class MainActivity extends AppCompatActivity {
                         startActivity(trangchu);
                         break;
                     case 1:
-                        Intent suaphasan = new Intent(getApplicationContext(), SuaPhaSanActivity.class);
+                        Intent suaphasan = new Intent(getApplicationContext(), SuaBotActivity.class);
+                        suaphasan.putExtra("category_id",2);
                         startActivity(suaphasan);
                         break;
                     case 2:
