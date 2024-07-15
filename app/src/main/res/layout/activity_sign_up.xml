@@ -5,17 +5,17 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activity.SignIn">
+    tools:context=".activity.SignUpActivity">
+
     <androidx.cardview.widget.CardView
         android:id="@+id/cardViewRegister"
         android:layout_width="350dp"
-        android:layout_height="250dp"
+        android:layout_height="500dp"
         app:cardElevation="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.42">
+        app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -25,12 +25,12 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center"
                 android:layout_marginLeft="20dp"
                 android:layout_marginTop="25dp"
                 android:layout_marginRight="20dp"
                 android:fontFamily="@font/poppinsbold"
-                android:text="Đăng nhập"
+                android:gravity="center"
+                android:text="Đăng ký"
                 android:textSize="25sp" />
 
             <com.google.android.material.textfield.TextInputLayout
@@ -42,7 +42,24 @@
                 android:hint="Email">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/txtsignInEmail"
+                    android:id="@+id/txtSignUpEmail"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="#F4F4F4"
+                    android:drawableEnd="@drawable/username_right"
+                    android:fontFamily="@font/poppinsmedium" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="10dp"
+                android:hint="Họ và tên">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/txtSignUpUsername"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="#F4F4F4"
@@ -59,15 +76,52 @@
                 android:hint="Mật khẩu">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:inputType="textPassword"
-                    android:id="@+id/txtSignInPassword"
+                    android:id="@+id/txtSignUpPassword"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="#F4F4F4"
+                    android:drawableEnd="@drawable/password_right"
+                    android:fontFamily="@font/poppinsmedium"
+                    android:inputType="textPassword" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginRight="10dp"
+                android:hint="Nhập lại mật khẩu">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/txtSignUpRePassword"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="#F4F4F4"
+                    android:drawableEnd="@drawable/password_right"
+                    android:fontFamily="@font/poppinsmedium"
+                    android:inputType="textPassword" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginRight="10dp"
+                android:hint="Số điện thoại">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/txtSignUpPhone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="#F4F4F4"
                     android:drawableEnd="@drawable/password_right"
                     android:fontFamily="@font/poppinsmedium" />
-            </com.google.android.material.textfield.TextInputLayout>
 
+            </com.google.android.material.textfield.TextInputLayout>
 
 
         </LinearLayout>
@@ -91,7 +145,7 @@
             android:visibility="gone" />
 
         <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btnSignIn"
+            android:id="@+id/btnSignUp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
@@ -100,78 +154,11 @@
             android:background="@drawable/background_button"
             android:fontFamily="@font/poppinsbold"
             android:gravity="center"
-            android:text="Đăng nhập"
+            android:text="Đăng ký"
             android:textColor="#fff"
             android:textSize="22dp" />
 
     </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/question2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:gravity="center"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/signup">
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/rounded_rectangle" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:fontFamily="@font/poppinsmedium"
-            android:text="Bạn chưa có tài khoản?"
-            android:textSize="17dp" />
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/rounded_rectangle" />
-    </LinearLayout>
-
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:gravity="center"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/question2">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/poppinsmedium" />
-
-        <TextView
-            android:id="@+id/txtSignUpNow"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/poppinsmedium"
-            android:text="-   Đăng ký ngay  -"
-            android:textColor="#3F51B5" />
-
-    </LinearLayout>
-
-    <ImageView
-        android:id="@+id/imageViewRegister"
-        android:layout_width="500dp"
-        android:layout_height="164dp"
-        android:layout_marginTop="24dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.505"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_milksignin_foreground" />
 </androidx.constraintlayout.widget.ConstraintLayout>

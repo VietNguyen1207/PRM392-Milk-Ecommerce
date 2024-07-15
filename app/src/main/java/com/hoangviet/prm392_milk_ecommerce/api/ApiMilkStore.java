@@ -2,6 +2,7 @@ package com.hoangviet.prm392_milk_ecommerce.api;
 
 import com.hoangviet.prm392_milk_ecommerce.callback.Category_callback;
 import com.hoangviet.prm392_milk_ecommerce.callback.NewProduct_callback;
+import com.hoangviet.prm392_milk_ecommerce.callback.User_callback;
 
 import io.reactivex.rxjava3.core.Observable;
 import retrofit2.http.Field;
@@ -24,5 +25,15 @@ public interface ApiMilkStore {
     Observable<NewProduct_callback> getProductInformation(
             @Field("page") int page,
             @Field("category_id") int category_id
+    );
+
+    //sign up
+    @POST("signUp.php")
+    @FormUrlEncoded
+    Observable<User_callback> signUp(
+            @Field("email") String email,
+            @Field("password") String password,
+            @Field("username") String username,
+              @Field("phone") String phone
     );
 }
