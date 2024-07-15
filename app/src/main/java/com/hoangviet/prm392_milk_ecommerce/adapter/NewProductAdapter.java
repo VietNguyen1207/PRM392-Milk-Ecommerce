@@ -39,7 +39,7 @@ public class NewProductAdapter extends RecyclerView.Adapter<NewProductAdapter.My
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         NewProduct newProduct = listNewProducts.get(position);
         holder.txtNewProductName.setText(newProduct.getProduct_name());
-        holder.txtNewProductPrice.setText(newProduct.getProduct_price());
+        holder.txtNewProductPrice.setText(String.valueOf(newProduct.getProduct_price()));
         Glide.with(context).load(newProduct.getProduct_image()).into(holder.newProductImage);
 
         holder.setItemClickListener(new ItemClickListener() {
