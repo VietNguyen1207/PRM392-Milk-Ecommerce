@@ -22,6 +22,25 @@
                 android:background="#ff00dfff"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize">
+                <FrameLayout
+                    android:id="@+id/frameLayoutCart"
+                    android:layout_width="55dp"
+                    android:layout_height="?attr/actionBarSize"
+                    android:layout_marginRight="10dp"
+                    android:layout_gravity="right">
+
+                    <com.nex3z.notificationbadge.NotificationBadge
+                        android:id="@+id/cartQuantity"
+                        android:layout_width="28dp"
+                        android:layout_height="28dp"
+                        android:layout_gravity="top|right"/>
+
+                    <ImageView
+                        android:src="@drawable/ic_cart_24"
+                        android:layout_marginTop="15dp"
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"/>
+                </FrameLayout>
             </androidx.appcompat.widget.Toolbar>
             
             <ViewFlipper

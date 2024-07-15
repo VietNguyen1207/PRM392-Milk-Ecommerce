@@ -17,7 +17,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.hoangviet.prm392_milk_ecommerce.R;
 import com.hoangviet.prm392_milk_ecommerce.adapter.CartAdapter;
 import com.hoangviet.prm392_milk_ecommerce.model.Cart;
+import com.hoangviet.prm392_milk_ecommerce.model.EventBus.CalTotalCartEvent;
 import com.hoangviet.prm392_milk_ecommerce.utils.Utils;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.List;
 
@@ -35,7 +40,17 @@ public class CartActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_cart);
         initView();
-        initControll();    }
+        initControll();
+        calTotalMoney();
+    }
+
+    private void calTotalMoney() {
+        float total = 0;
+        for (int i = 0; i < Utils.listCart.size(); i++) {
+            total = total + Utils.listCart.get(i).getProductPrice() * Utils.listCart.get(i).getQuantity();
+        }
+        txtTotalCartPrice.setText(String.valueOf(total + " "));
+    }
 
     private void initControll() {
         setSupportActionBar(toolbar);
@@ -50,7 +65,7 @@ public class CartActivity extends AppCompatActivity {
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
         if(Utils.listCart.isEmpty()) {
-            txtblankCart.setText(View.VISIBLE);
+            txtblankCart.setVisibility(View.VISIBLE);
         }else {
             cartAdapter = new CartAdapter(getApplicationContext(), Utils.listCart);
             recyclerView.setAdapter(cartAdapter);
@@ -65,6 +80,25 @@ public class CartActivity extends AppCompatActivity {
         toolbar = findViewById(R.id.cartToolbar);
         recyclerView = findViewById(R.id.recyclerViewCart);
         btnBuy = findViewById(R.id.btnCartBuy);
+    }
 
+    @Override
+    protected void onStart() {
+        EventBus.getDefault().register(this);
+        super.onStart();
+
+    }
+
+    @Override
+    protected void onStop() {
+        EventBus.getDefault().unregister(this);
+        super.onStop();
+    }
+
+    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
+    public void calTotalCartPrice(CalTotalCartEvent event){
+        if(event != null){
+            calTotalMoney();
+        }
     }
 }

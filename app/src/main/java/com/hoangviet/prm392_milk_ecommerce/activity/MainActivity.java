@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -28,10 +29,12 @@ import com.hoangviet.prm392_milk_ecommerce.adapter.CategoryAdapter;
 import com.hoangviet.prm392_milk_ecommerce.adapter.NewProductAdapter;
 import com.hoangviet.prm392_milk_ecommerce.api.ApiMilkStore;
 import com.hoangviet.prm392_milk_ecommerce.callback.NewProduct_callback;
+import com.hoangviet.prm392_milk_ecommerce.model.Cart;
 import com.hoangviet.prm392_milk_ecommerce.model.Category;
 import com.hoangviet.prm392_milk_ecommerce.model.NewProduct;
 import com.hoangviet.prm392_milk_ecommerce.retrofit.RetrofitClient;
 import com.hoangviet.prm392_milk_ecommerce.utils.Utils;
+import com.nex3z.notificationbadge.NotificationBadge;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,6 +52,8 @@ public class MainActivity extends AppCompatActivity {
     NavigationView navigationView;
     ListView listViewManHinhChinh;
     DrawerLayout drawerLayout;
+    NotificationBadge badge;
+    FrameLayout frameLayout;
 
 
     //Adapter
@@ -70,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         apiMilkStore = RetrofitClient.getInstance(Utils.BASE_URL).create(ApiMilkStore.class);
-        Anhxa();
+        initView();
         ActionBar();
         getNewProduct();
         getEnventClick();
@@ -184,7 +189,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void Anhxa(){
+    private void initView(){
         toolbar = findViewById(R.id.toolbarmanhinhchinh);
         viewFlipper = findViewById(R.id.viewflipper);
         recyclerViewManHinhChinh = findViewById(R.id.recyleview);
@@ -194,15 +199,37 @@ public class MainActivity extends AppCompatActivity {
         navigationView = findViewById(R.id.navigationview);
         listViewManHinhChinh = findViewById(R.id.listviewmanhinhchinh);
         drawerLayout = findViewById(R.id.drawerlayout);
-
+        badge = findViewById(R.id.cartQuantity);
+        frameLayout = findViewById(R.id.frameLayoutCart);
         //khoi tao list
         listCategories = new ArrayList<>();
         listNewProducts = new ArrayList<>();
         if(Utils.listCart == null){
             Utils.listCart = new ArrayList<>();
-
+        }else {
+            int totalItems = 0;
+            for (int i = 0; i < Utils.listCart.size(); i++) {
+                totalItems += Utils.listCart.get(i).getQuantity();
+            }
+            badge.setText(String.valueOf(totalItems));
         }
+        frameLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intentCart = new Intent(getApplicationContext(), CartActivity.class);
+                startActivity(intentCart);
+            }
+        });
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        int totalItems = 0;
+        for (int i = 0; i < Utils.listCart.size(); i++) {
+            totalItems += Utils.listCart.get(i).getQuantity();
+        }
+        badge.setText(String.valueOf(totalItems));
     }
 
     private boolean isConnect (Context context){

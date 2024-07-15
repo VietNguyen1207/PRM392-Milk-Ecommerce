@@ -62,13 +62,15 @@ public class ProductInformationActivity extends AppCompatActivity {
             for (int i = 0; i < Utils.listCart.size(); i++) {
                 if(Utils.listCart.get(i).getIdProduct() == newProduct.getId()){
                     Utils.listCart.get(i).setQuantity(quantity + Utils.listCart.get(i).getQuantity());
-                    Float productPrice = newProduct.getProduct_price() * quantity;
+//                    Float productPrice = newProduct.getProduct_price() * quantity;
+                    Float productPrice = newProduct.getProduct_price();
                     Utils.listCart.get(i).setProductPrice(productPrice);
                     flag = true;
                 }
             }
             if(flag == false){
-                Float productPrice = newProduct.getProduct_price() * quantity;
+//                Float productPrice = newProduct.getProduct_price() * quantity;
+                Float productPrice = newProduct.getProduct_price();
                 Cart cart = new Cart();
                 cart.setProductPrice(productPrice);
                 cart.setQuantity(quantity);
@@ -81,7 +83,8 @@ public class ProductInformationActivity extends AppCompatActivity {
 
         }else{
             int quantity = Integer.parseInt(spinner.getSelectedItem().toString());
-            Float productPrice = newProduct.getProduct_price() * quantity;
+//            Float productPrice = newProduct.getProduct_price() * quantity;
+            Float productPrice = newProduct.getProduct_price();
             Cart cart = new Cart();
             cart.setProductPrice(productPrice);
             cart.setQuantity(quantity);

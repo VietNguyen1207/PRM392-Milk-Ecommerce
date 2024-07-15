@@ -56,4 +56,8 @@ dependencies {
 //    thư viện badge
     implementation ("com.nex3z:notification-badge:1.0.4")
 
+// event bus
+    implementation ("org.greenrobot:eventbus:3.0.0")
+
+
 }
