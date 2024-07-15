@@ -49,7 +49,7 @@ public class SuabotAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             MyViewHolder myViewHolder = (MyViewHolder) holder;
             NewProduct suabot = listSuaBot.get(position);
             myViewHolder.productName.setText(suabot.getProduct_name());
-            myViewHolder.productPrice.setText(suabot.getProduct_price());
+            myViewHolder.productPrice.setText(String.valueOf(suabot.getProduct_price()));
             myViewHolder.productDescription.setText(suabot.getDescription());
             Glide.with(context).load(suabot.getProduct_image()).into(myViewHolder.productImage);
             myViewHolder.setItemClickListener(new ItemClickListener() {

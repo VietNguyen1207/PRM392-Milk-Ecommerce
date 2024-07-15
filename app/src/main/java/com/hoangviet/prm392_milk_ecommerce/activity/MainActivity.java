@@ -198,6 +198,10 @@ public class MainActivity extends AppCompatActivity {
         //khoi tao list
         listCategories = new ArrayList<>();
         listNewProducts = new ArrayList<>();
+        if(Utils.listCart == null){
+            Utils.listCart = new ArrayList<>();
+
+        }
 
     }
 

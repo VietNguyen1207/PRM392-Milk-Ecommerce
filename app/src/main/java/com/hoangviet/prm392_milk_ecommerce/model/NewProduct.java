@@ -6,7 +6,7 @@ public class NewProduct implements Serializable {
     int id;
     String product_name;
     String product_image;
-    String product_price;
+    Float product_price;
     String description;
     int category_id;
 
@@ -34,11 +34,11 @@ public class NewProduct implements Serializable {
         this.product_image = product_image;
     }
 
-    public String getProduct_price() {
+    public Float getProduct_price() {
         return product_price;
     }
 
-    public void setProduct_price(String product_price) {
+    public void setProduct_price(Float product_price) {
         this.product_price = product_price;
     }
 

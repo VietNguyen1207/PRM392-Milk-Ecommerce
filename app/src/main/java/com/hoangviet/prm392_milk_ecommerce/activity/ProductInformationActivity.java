@@ -17,7 +17,10 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.bumptech.glide.Glide;
 import com.hoangviet.prm392_milk_ecommerce.R;
+import com.hoangviet.prm392_milk_ecommerce.model.Cart;
 import com.hoangviet.prm392_milk_ecommerce.model.NewProduct;
+import com.hoangviet.prm392_milk_ecommerce.utils.Utils;
+import com.nex3z.notificationbadge.NotificationBadge;
 
 public class ProductInformationActivity extends AppCompatActivity {
 
@@ -26,6 +29,8 @@ public class ProductInformationActivity extends AppCompatActivity {
     ImageView imgProduct;
     Spinner spinner;
     Toolbar toolbar;
+    NewProduct newProduct;
+    NotificationBadge badge;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,12 +40,61 @@ public class ProductInformationActivity extends AppCompatActivity {
         initView();
         ActionToolBar();
         initData();
+        initAddtoCart();
+
+    }
+
+    private void initAddtoCart(){
+        btnAddtoCart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                addToCart();
+            }
+        });
+    }
+
+    private void addToCart(){
+        if(Utils.listCart.size() > 0){
+            boolean flag = false;
+            int quantity = Integer.parseInt(spinner.getSelectedItem().toString());
+            for (int i = 0; i < Utils.listCart.size(); i++) {
+                if(Utils.listCart.get(i).getIdProduct() == newProduct.getId()){
+                    Utils.listCart.get(i).setQuantity(quantity + Utils.listCart.get(i).getQuantity());
+                    Float productPrice = newProduct.getProduct_price() * quantity;
+                    Utils.listCart.get(i).setProductPrice(productPrice);
+                    flag = true;
+                }
+            }
+            if(flag == false){
+                Float productPrice = newProduct.getProduct_price() * quantity;
+                Cart cart = new Cart();
+                cart.setProductPrice(productPrice);
+                cart.setQuantity(quantity);
+                cart.setIdProduct(newProduct.getId());
+                cart.setProductName(newProduct.getProduct_name());
+                cart.setProductImage(newProduct.getProduct_image());
+                Utils.listCart.add(cart);
+            }
+
+
+        }else{
+            int quantity = Integer.parseInt(spinner.getSelectedItem().toString());
+            Float productPrice = newProduct.getProduct_price() * quantity;
+            Cart cart = new Cart();
+            cart.setProductPrice(productPrice);
+            cart.setQuantity(quantity);
+            cart.setIdProduct(newProduct.getId());
+            cart.setProductName(newProduct.getProduct_name());
+            cart.setProductImage(newProduct.getProduct_image());
+            Utils.listCart.add(cart);
+        }
+        badge.setText(String.valueOf(Utils.listCart.size()));
     }
 
     private void initData(){
-        NewProduct newProduct = (NewProduct) getIntent().getSerializableExtra("productDetail");
+        newProduct = (NewProduct) getIntent().getSerializableExtra("productDetail");
         txtProductName.setText(newProduct.getProduct_name());
-        txtProductPrice.setText(newProduct.getProduct_price());
+        txtProductPrice.setText(String.valueOf(newProduct.getProduct_price()));
         txtProductDescription.setText(newProduct.getDescription());
         Glide.with(getApplicationContext()).load(newProduct.getProduct_image()).into(imgProduct);
         Integer[]  quantity = new Integer[]{1,2,3,4,5,6,7,8,9,10};
@@ -56,6 +110,10 @@ public class ProductInformationActivity extends AppCompatActivity {
         spinner = findViewById(R.id.spinner);
         imgProduct = findViewById(R.id.imgProdcutInformation);
         toolbar = findViewById(R.id.toolbarDetail);
+        badge = findViewById(R.id.cartQuantity);
+        if(Utils.listCart != null){
+            badge.setText(String.valueOf(Utils.listCart.size()));
+        }
     }
 
     private void ActionToolBar() {
