@@ -1,6 +1,8 @@
 package com.hoangviet.prm392_milk_ecommerce.adapter;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +17,7 @@ import com.hoangviet.prm392_milk_ecommerce.Interface.IImageClickListener;
 import com.hoangviet.prm392_milk_ecommerce.R;
 import com.hoangviet.prm392_milk_ecommerce.model.Cart;
 import com.hoangviet.prm392_milk_ecommerce.model.EventBus.CalTotalCartEvent;
+import com.hoangviet.prm392_milk_ecommerce.utils.Utils;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -92,17 +95,44 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.MyViewHolder> 
                     if(listCart.get(position).getQuantity() > 1){
                         int newQuantity = listCart.get(position).getQuantity() -1;
                         listCart.get(position).setQuantity(newQuantity);
+
+                        holder.txtCartProductQuantity.setText(listCart.get(position).getQuantity() + " ");
+                        float totalProductPrice = listCart.get(position).getProductPrice() * listCart.get(position).getQuantity();
+                        holder.txtCartProductTotalPrice.setText(String.valueOf(totalProductPrice));
+                        EventBus.getDefault().postSticky(new CalTotalCartEvent());
+
+                    }else  if(listCart.get(position).getQuantity() == 1){
+                        AlertDialog.Builder builder = new AlertDialog.Builder(view.getRootView().getContext());
+                        builder.setTitle("Thông báo");
+                        builder.setMessage("Bạn có muốn xoá sản phẩm này khỏi giỏ hàng ?");
+                        builder.setPositiveButton("Đồng ý", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                Utils.listCart.remove(position);
+                                notifyDataSetChanged();
+                                EventBus.getDefault().postSticky(new CalTotalCartEvent());
+
+                            }
+                        });
+                        builder.setNegativeButton("Huỷ", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.dismiss();
+                            }
+                        });
+                        builder.show();
                     }
                 }else if(value ==2){
                     if(listCart.get(position).getQuantity() < 11){
                         int newQuantity = listCart.get(position).getQuantity() + 1;
                         listCart.get(position).setQuantity(newQuantity);
                     }
+                    holder.txtCartProductQuantity.setText(listCart.get(position).getQuantity() + " ");
+                    float totalProductPrice = listCart.get(position).getProductPrice() * listCart.get(position).getQuantity();
+                    holder.txtCartProductTotalPrice.setText(String.valueOf(totalProductPrice));
+                    EventBus.getDefault().postSticky(new CalTotalCartEvent());
                 }
-                holder.txtCartProductQuantity.setText(listCart.get(position).getQuantity() + " ");
-                float totalProductPrice = listCart.get(position).getProductPrice() * listCart.get(position).getQuantity();
-                holder.txtCartProductTotalPrice.setText(String.valueOf(totalProductPrice));
-                EventBus.getDefault().postSticky(new CalTotalCartEvent());
+
             }
         });
 

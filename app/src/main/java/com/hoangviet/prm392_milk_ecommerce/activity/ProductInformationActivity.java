@@ -130,7 +130,11 @@ public class ProductInformationActivity extends AppCompatActivity {
         });
 
         if(Utils.listCart != null){
-            badge.setText(String.valueOf(Utils.listCart.size()));
+            int totalItems = 0;
+            for (int i = 0; i < Utils.listCart.size(); i++) {
+                totalItems += Utils.listCart.get(i).getQuantity();
+            }
+            badge.setText(String.valueOf(totalItems));
         }
     }
 
@@ -143,5 +147,17 @@ public class ProductInformationActivity extends AppCompatActivity {
                 finish();
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(Utils.listCart != null){
+            int totalItems = 0;
+            for (int i = 0; i < Utils.listCart.size(); i++) {
+                totalItems += Utils.listCart.get(i).getQuantity();
+            }
+            badge.setText(String.valueOf(totalItems));
+        }
     }
 }
