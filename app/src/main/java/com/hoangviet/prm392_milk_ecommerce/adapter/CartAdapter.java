@@ -11,8 +11,12 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.hoangviet.prm392_milk_ecommerce.Interface.IImageClickListener;
 import com.hoangviet.prm392_milk_ecommerce.R;
 import com.hoangviet.prm392_milk_ecommerce.model.Cart;
+import com.hoangviet.prm392_milk_ecommerce.model.EventBus.CalTotalCartEvent;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
 
@@ -25,12 +29,16 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.MyViewHolder> 
         this.listCart = listCart;
     }
 
-    public class MyViewHolder extends RecyclerView.ViewHolder{
+    public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         TextView txtCartProductName,
                 txtCartProductPrice,
                 txtCartProductQuantity,
                 txtCartProductTotalPrice;
-        ImageView cartProductImage;
+        ImageView cartProductImage,
+                imgDecreaseProduct,
+                imgIncreaseProduct;
+
+        IImageClickListener listener;
 
 
         public MyViewHolder(@NonNull View itemView) {
@@ -40,6 +48,24 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.MyViewHolder> 
             txtCartProductQuantity = (TextView) itemView.findViewById(R.id.item_cart_quantity);
             txtCartProductTotalPrice = (TextView) itemView.findViewById(R.id.item_cart_productTotalPrice);
             cartProductImage = (ImageView) itemView.findViewById(R.id.item_cart_image);
+            imgDecreaseProduct = (ImageView) itemView.findViewById(R.id.cart_decrease_product);
+            imgIncreaseProduct = (ImageView) itemView.findViewById(R.id.cart_increase_product);
+
+            imgDecreaseProduct.setOnClickListener(this);
+            imgIncreaseProduct.setOnClickListener(this);
+        }
+
+        public void setListener(IImageClickListener listener) {
+            this.listener = listener;
+        }
+
+        @Override
+        public void onClick(View view) {
+            if(view == imgDecreaseProduct){
+                listener.onImageClick(view, getAdapterPosition(), 1);
+            }else if(view == imgIncreaseProduct){
+                listener.onImageClick(view, getAdapterPosition(), 2);
+            }
         }
     }
 
@@ -59,7 +85,26 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.MyViewHolder> 
         holder.txtCartProductPrice.setText(String.valueOf(cart.getProductPrice()));
         float totalProductPrice = cart.getProductPrice() * cart.getQuantity();
         holder.txtCartProductTotalPrice.setText(String.valueOf(totalProductPrice));
-
+        holder.setListener(new IImageClickListener() {
+            @Override
+            public void onImageClick(View view, int position, int value) {
+                if (value == 1){
+                    if(listCart.get(position).getQuantity() > 1){
+                        int newQuantity = listCart.get(position).getQuantity() -1;
+                        listCart.get(position).setQuantity(newQuantity);
+                    }
+                }else if(value ==2){
+                    if(listCart.get(position).getQuantity() < 11){
+                        int newQuantity = listCart.get(position).getQuantity() + 1;
+                        listCart.get(position).setQuantity(newQuantity);
+                    }
+                }
+                holder.txtCartProductQuantity.setText(listCart.get(position).getQuantity() + " ");
+                float totalProductPrice = listCart.get(position).getProductPrice() * listCart.get(position).getQuantity();
+                holder.txtCartProductTotalPrice.setText(String.valueOf(totalProductPrice));
+                EventBus.getDefault().postSticky(new CalTotalCartEvent());
+            }
+        });
 
 
     }
