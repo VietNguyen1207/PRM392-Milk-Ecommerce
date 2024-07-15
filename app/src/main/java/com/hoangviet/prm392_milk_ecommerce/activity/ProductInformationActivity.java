@@ -1,9 +1,11 @@
 package com.hoangviet.prm392_milk_ecommerce.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -88,7 +90,11 @@ public class ProductInformationActivity extends AppCompatActivity {
             cart.setProductImage(newProduct.getProduct_image());
             Utils.listCart.add(cart);
         }
-        badge.setText(String.valueOf(Utils.listCart.size()));
+        int totalItems = 0;
+        for (int i = 0; i < Utils.listCart.size(); i++) {
+            totalItems += Utils.listCart.get(i).getQuantity();
+        }
+        badge.setText(String.valueOf(totalItems));
     }
 
     private void initData(){
@@ -111,6 +117,15 @@ public class ProductInformationActivity extends AppCompatActivity {
         imgProduct = findViewById(R.id.imgProdcutInformation);
         toolbar = findViewById(R.id.toolbarDetail);
         badge = findViewById(R.id.cartQuantity);
+        FrameLayout frameLayoutCart = (FrameLayout) findViewById(R.id.frameLayoutCart);
+        frameLayoutCart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent interCart = new Intent(getApplicationContext(), CartActivity.class);
+                startActivity(interCart);
+            }
+        });
+
         if(Utils.listCart != null){
             badge.setText(String.valueOf(Utils.listCart.size()));
         }
