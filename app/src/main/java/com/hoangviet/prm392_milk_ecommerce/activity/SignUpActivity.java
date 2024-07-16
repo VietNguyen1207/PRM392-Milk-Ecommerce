@@ -82,6 +82,8 @@ public class SignUpActivity extends AppCompatActivity {
                                     Toast.makeText(getApplicationContext(),throwable.getMessage(), Toast.LENGTH_SHORT).show();
                                 }
                         ));
+                Intent intent = new Intent(SignUpActivity.this, SignInActivity.class);
+                startActivity(intent);
             }else {
                 Toast.makeText(getApplicationContext(), "Mật khẩu chưa trùng khớp", Toast.LENGTH_SHORT).show();
             }
